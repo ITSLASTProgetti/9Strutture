@@ -1,0 +1,4 @@
+Scaletta di cosa deve fare il bot con tutti i passaggi in basa ai filtri selezionati dall'utente.
+All'inizio ti da una descrizione del bot e di come funziona, successivamente tramite dei bottoni ti chiede di selezionare che tipo di struttura ti serve (ristorante, bar, hotel...). Successivamente ti chiede se vuoi una posto random o vicino a te.
+Dopo di chè ti fornisce le informazioni relative al posto e il link a google maps per raggiungerlo
+
