@@ -17,7 +17,7 @@ def execute_query(query):
 def format_results(results):
     formatted = ''
     for row in results:
-        formatted += "NOME STRUTTURA: {}\n, INDIRIZZO: {}\n\n".format(row[0], row[1])
+        formatted += "NOME STRUTTURA: {}\nINDIRIZZO: {}\n\n".format(row[0], row[1])
     return formatted
 
 from telegram.ext import Updater, CommandHandler
@@ -26,9 +26,10 @@ from telegram.ext import Updater, CommandHandler
 async def bott1(update, context):
     # Creazione dei bottoni
     kbBus = [
-        [InlineKeyboardButton("Agriturismo", callback_data='bus_agri')],
-        [InlineKeyboardButton("B&B", callback_data='bus_bb')],
-        [InlineKeyboardButton("Hotel", callback_data='bus_hotel')]
+        [InlineKeyboardButton("Lista degli agriturismi", callback_data='bus_agri')],
+        [InlineKeyboardButton("Lista dei b&b", callback_data='bus_bb')],
+        [InlineKeyboardButton("Random", callback_data='bus_rd')],
+        [InlineKeyboardButton("Lista hotel", callback_data='bus_Lista_hotel')]
     ]
     reply_markup = InlineKeyboardMarkup(kbBus)
     # Invio dei bottoni all'utente
@@ -38,30 +39,39 @@ async def bus_bb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = "SELECT * FROM Bussolengo where tipostruttura in ('Locazione turistica','Casa vacanza','Bed and Breakfast','Affittacamere')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco B&B:\n" + formatted_results
+    response = "Elenco Lista dei b&b:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
-async def bus_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def bus_rd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT* from Bussolengo ORDER by random ()LIMIT 1"
+    results = execute_query(query)
+    formatted_results = format_results(results)
+    response = "Elenco Random:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+    
+
+async def bus_Lista_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = "SELECT * FROM Bussolengo where tipostruttura in ('Albergo, Villaggio albergo, Albergo diffuso Residenze turistiche alberghiere Campeggi, villaggi turistici')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Hotel:\n" + formatted_results
+    response = "Elenco Lista_hotel:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 async def bus_agri(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Bussolengo where tipostruttura in ('Agriturismo')"
+    query = "SELECT * FROM Bussolengo where tipostruttura in ('Lista degli agriturismi')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Agriturismo:\n" + formatted_results
+    response = "Elenco Lista degli agriturismi:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 #bottone 2 - Castelnuovo
 async def bott2(update, context):
     # Creazione dei bottoni
     kbCas = [
-        [InlineKeyboardButton("Agriturismo", callback_data='cas_agri')],
-        [InlineKeyboardButton("B&B", callback_data='cas_bb')],
-        [InlineKeyboardButton("Hotel", callback_data='cas_hotel')]
+        [InlineKeyboardButton("Lista degli agriturismi", callback_data='cas_agri')],
+        [InlineKeyboardButton("Lista dei b&b", callback_data='cas_bb')],
+        [InlineKeyboardButton("Random", callback_data='cas_rd')],
+        [InlineKeyboardButton("Lista hotel", callback_data='cas_Lista_hotel')]
     ]
     reply_markup = InlineKeyboardMarkup(kbCas)
     # Invio dei bottoni all'utente
@@ -71,21 +81,33 @@ async def cas_bb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = "SELECT * FROM Castelnuovo where tipostruttura in ('Casa vacanza','Bed and Breakfast', 'Locanda','Campeggio','Affittacamere') limit 5"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco B&B:\n" + formatted_results
+    response = "Elenco Lista dei b&b:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
-async def cas_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Castelnuovo where tipostruttura in ('Albergo', 'Altre strutture extralberghiere', 'Villaggio','Residence')"
+async def cas_Lista_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT * FROM Castelnuovo where tipostruttura in ('Albergo', 'Altre strutture extralberghiere', 'Villaggio','Residence') order by nomestruttura asc limit 35"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Hotel:\n" + formatted_results
+    response = "Elenco Lista_hotel:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+    query1 = "SELECT * FROM Castelnuovo where tipostruttura in ('Albergo', 'Altre strutture extralberghiere', 'Villaggio','Residence') order by nomestruttura desc limit 36"
+    results1 = execute_query(query)
+    formatted_results1 = format_results(results)
+    response1 = "Elenco Lista_hotel:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 async def cas_agri(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Castelnuovo where tipostruttura in ('Agriturismo')"
+    query = "SELECT * FROM Castelnuovo where tipostruttura in ('Lista degli agriturismi')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Agriturismo:\n" + formatted_results
+    response = "Elenco Lista degli agriturismi:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+async def cas_rd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT* from Castelnuovo ORDER by random ()LIMIT 1"
+    results = execute_query(query)
+    formatted_results = format_results(results)
+    response = "Elenco Random:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 #bottone 3 _ Mozzecane
@@ -93,49 +115,65 @@ async def bott3(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Creazione dei bottoni
     kbMozz = [
         [InlineKeyboardButton("BB", callback_data='moz_bb')],
-        [InlineKeyboardButton("Hotel", callback_data='moz_hotel')]
+        [InlineKeyboardButton("Random", callback_data='moz_random')],
+        [InlineKeyboardButton("Lista hotel", callback_data='moz_Lista_hotel')]
     ]
     reply_markup = InlineKeyboardMarkup(kbMozz)
     # Invio dei bottoni all'utente
     await update.callback_query.message.edit_text(text='Mozzecane:', reply_markup=reply_markup)
 
 async def moz_bb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Mozzecane where tipostruttura = 'B&B'"
+    query = "SELECT * FROM Mozzecane where tipostruttura = 'Lista dei b&b'"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco B&B:\n" + formatted_results
+    response = "Elenco Lista dei b&b:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
-async def moz_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def moz_Lista_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = "SELECT * FROM Mozzecane where tipostruttura = 'Alberghiero'"
     results = execute_query(query)
     formatted_results = format_results(results)
     response = "Elenco Alberghi:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
+async def moz_rd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT * FROM Mozzecane order by random() limit 1 "
+    results = execute_query(query)
+    formatted_results = format_results(results)
+    response = "Elenco Random:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
 #bottone 4 - Pastrengo
 async def bott4(update, context):
     # Creazione dei bottoni
     kbPas = [
-        [InlineKeyboardButton("B&B", callback_data='pas_bb')],
-        [InlineKeyboardButton("Hotel", callback_data='pas_hotel')]
+        [InlineKeyboardButton("Lista dei b&b", callback_data='pas_bb')],
+        [InlineKeyboardButton("Random", callback_data='pas_random')],
+        [InlineKeyboardButton("Lista hotel", callback_data='pas_Lista_hotel')]
     ]
     reply_markup = InlineKeyboardMarkup(kbPas)
     # Invio dei bottoni all'utente
     await update.callback_query.message.edit_text(text='Pastrengo:', reply_markup=reply_markup)
 
 async def pas_bb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Pastrengo where tipostruttura in ('B&B')"
+    query = "SELECT * FROM Pastrengo where tipostruttura in ('Lista dei b&b')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco B&B:\n" + formatted_results
+    response = "Elenco Lista dei b&b:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
-async def pas_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def pas_Lista_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = "SELECT * FROM Pastrengo where tipostruttura in ('Alberghiero')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Hotel:\n" + formatted_results
+    response = "Elenco Lista_hotel:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+async def pas_rd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT * FROM Pastrengo order by random() limit 1"
+    results = execute_query(query)
+    formatted_results = format_results(results)
+    response = "Elenco Random:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
@@ -143,58 +181,74 @@ async def pas_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def bott5(update, context):
 # Creazione dei bottoni
     kbPes = [
-        [InlineKeyboardButton("B&B", callback_data='pes_bb')],
-        [InlineKeyboardButton("Hotel", callback_data='pes_hotel')]
+        [InlineKeyboardButton("Lista dei b&b", callback_data='pes_bb')],
+        [InlineKeyboardButton("Random", callback_data='pes_random')],
+        [InlineKeyboardButton("Lista hotel", callback_data='pes_Lista_hotel')]
     ]
     reply_markup = InlineKeyboardMarkup(kbPes)
     # Invio dei bottoni all'utente
     await update.callback_query.message.edit_text(text='Pescantina:', reply_markup=reply_markup)
 
 async def pes_bb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Pescantina where tipostruttura in ('B&B')"
+    query = "SELECT * FROM Pescantina where tipostruttura in ('Lista dei b&b')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco B&B:\n" + formatted_results
+    response = "Elenco Lista dei b&b:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
-async def pes_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Pescantina where tipostruttura in ('Hotel')"
+async def pes_rd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT * FROM Pescantina order by random() limit 1"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Hotel:\n" + formatted_results
+    response = "Elenco random:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+async def pes_Lista_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT * FROM Pescantina where tipostruttura in ('Lista_hotel')"
+    results = execute_query(query)
+    formatted_results = format_results(results)
+    response = "Elenco Lista_hotel:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 #bottone 6 - Sommacampagna
 async def bott6(update, context):
     # Creazione dei bottoni
     kbSom = [
-        [InlineKeyboardButton("Agriturismo", callback_data='som_agri')],
-        [InlineKeyboardButton("B&B", callback_data='som_bb')],
-        [InlineKeyboardButton("Hotel", callback_data='som_hotel')]
+        [InlineKeyboardButton("Lista degli agriturismi", callback_data='som_agri')],
+        [InlineKeyboardButton("Lista dei b&b", callback_data='som_bb')],
+        [InlineKeyboardButton("Random", callback_data='som_random')],
+        [InlineKeyboardButton("Lista hotel", callback_data='som_Lista_hotel')]
     ]
     reply_markup = InlineKeyboardMarkup(kbSom)
     # Invio dei bottoni all'utente
     await update.callback_query.message.edit_text(text='Sommacampagna:', reply_markup=reply_markup)
 
 async def som_bb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Sommacampagna where tipostruttura in ('B&B','LOCAZIONE TURISTICA', 'ALLOGGIO TURISTICO','STRUTTURA TURISTICA CLASSIFICATA')"
+    query = "SELECT * FROM Sommacampagna where tipostruttura in ('Lista dei b&b','LOCAZIONE TURISTICA', 'ALLOGGIO TURISTICO','STRUTTURA TURISTICA CLASSIFICATA')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco B&B:\n" + formatted_results
+    response = "Elenco Lista dei b&b:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
-async def som_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def som_Lista_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = "SELECT * FROM Sommacampagna where tipostruttura in ('STRUTTURA RICETTIVA ALBERGHIERA', 'STRUTTURA RICETTIVA COMPLEMENTARE', 'STRUTTURA RICETTIVA COMPLEMENTARE CLASSIFICATA')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Hotel:\n" + formatted_results
+    response = "Elenco Lista_hotel:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 async def som_agri(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Sommacampagna where tipostruttura in ('AGRITURISMO')"
+    query = "SELECT * FROM Sommacampagna where tipostruttura in ('Lista degli agriturismi')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Agriturismo:\n" + formatted_results
+    response = "Elenco Lista degli agriturismi:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+async def som_rd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT * FROM Sommacampagna order by random() limit 1"
+    results = execute_query(query)
+    formatted_results = format_results(results)
+    response = "Elenco random:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
@@ -202,18 +256,19 @@ async def som_agri(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def bott7(update, context):
     # Creazione dei bottoni
     kbSo = [
-        [InlineKeyboardButton("Agriturismo", callback_data='so_agri')],
-        [InlineKeyboardButton("B&B", callback_data='so_bb')]
+        [InlineKeyboardButton("Lista degli agriturismi", callback_data='so_agri')],
+        [InlineKeyboardButton("Random", callback_data='so_random')],
+        [InlineKeyboardButton("Lista dei b&b", callback_data='so_bb')]
     ]
     reply_markup = InlineKeyboardMarkup(kbSo)
     # Invio dei bottoni all'utente
     await update.callback_query.message.edit_text(text='Sona:', reply_markup=reply_markup)
 
 async def so_bb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Sona where tipostruttura in ('B&B')"
+    query = "SELECT * FROM Sona where tipostruttura in ('Lista dei b&b')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco B&B:\n" + formatted_results
+    response = "Elenco Lista dei b&b:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
@@ -221,83 +276,107 @@ async def so_agri(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = "SELECT * FROM Sona where tipostruttura in ('Alberghiero')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Agriturismo:\n" + formatted_results
+    response = "Elenco Lista degli agriturismi:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+async def so_rd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT * FROM Sona order by random() limit 1"
+    results = execute_query(query)
+    formatted_results = format_results(results)
+    response = "Elenco Lista degli agriturismi:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 #bottone 8 - Valeggio
 async def bott8(update, context):
     # Creazione dei bottoni
     kbVal = [
-        [InlineKeyboardButton("Agriturismo", callback_data='val_agri')],
-        [InlineKeyboardButton("B&B", callback_data='val_bb')]
+        [InlineKeyboardButton("Lista degli agriturismi", callback_data='val_agri')],
+        [InlineKeyboardButton("Random", callback_data='val_random')],
+        [InlineKeyboardButton("Lista dei b&b", callback_data='val_bb')]
     ]
     reply_markup = InlineKeyboardMarkup(kbVal)
     # Invio dei bottoni all'utente
     await update.callback_query.message.edit_text(text='Valeggio:', reply_markup=reply_markup)
 
 async def val_bb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Valeggio where tipostruttura in ('B&B')"
+    query = "SELECT * FROM Valeggio where tipostruttura in ('Lista dei b&b')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco B&B:\n" + formatted_results
+    response = "Elenco Lista dei b&b:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 async def val_agri(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = "SELECT * FROM Valeggio where tipostruttura in ('Alberghiero')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Agriturismo:\n" + formatted_results
+    response = "Elenco Lista degli agriturismi:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+async def val_rd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT * FROM Valeggio order by random() limit 1"
+    results = execute_query(query)
+    formatted_results = format_results(results)
+    response = "Elenco Random:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 #bottone 9 - Villafranca
 async def bott9(update, context):
     # Creazione dei bottoni
     kbVil = [
-        [InlineKeyboardButton("Agriturismo", callback_data='vil_agri')],
-        [InlineKeyboardButton("B&B", callback_data='vil_bb')],
-        [InlineKeyboardButton("Hotel", callback_data='vil_hotel')]
+        [InlineKeyboardButton("Lista degli agriturismi", callback_data='vil_agri')],
+        [InlineKeyboardButton("Lista dei b&b", callback_data='vil_bb')],
+        [InlineKeyboardButton("Random", callback_data='vil_random')],
+        [InlineKeyboardButton("Lista hotel", callback_data='vil_Lista_hotel')]
     ]
     reply_markup = InlineKeyboardMarkup(kbVil)
     # Invio dei bottoni all'utente
     await update.callback_query.message.edit_text(text='Villafranca:', reply_markup=reply_markup)
 
 async def vil_bb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Villafranca where tipostruttura in ('B&B','Affittacamere', 'Locazioni turistiche','Unità abitative')"
+    query = "SELECT * FROM Villafranca where tipostruttura in ('Lista dei b&b','Affittacamere', 'Locazioni turistiche','Unità abitative')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco B&B:\n" + formatted_results
+    response = "Elenco Lista dei b&b:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
-async def vil_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def vil_Lista_hotel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = "SELECT * FROM Villafranca where tipostruttura in ('Alberghiero', '', '')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Hotel:\n" + formatted_results
+    response = "Elenco Lista_hotel:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 async def vil_agri(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Villafranca where tipostruttura in ('Agriturismo','Enoturismo', 'Fattorie Sociali','Agricampeggio','Turismo rurale')"
+    query = "SELECT * FROM Villafranca where tipostruttura in ('Lista degli agriturismi','Enoturismo', 'Fattorie Sociali','Agricampeggio','Turismo rurale')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Agriturismo:\n" + formatted_results
+    response = "Elenco Lista degli agriturismi:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+async def vil_rd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT * FROM Villafranca order by random() limit 1"
+    results = execute_query(query)
+    formatted_results = format_results(results)
+    response = "Elenco Random:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 #bottone 10 - Vigasio
 async def bott10(update, context):
     # Creazione dei bottoni
     kbVi = [
-        [InlineKeyboardButton("Agriturismo", callback_data='vi_agri')],
-        [InlineKeyboardButton("B&B", callback_data='vi_bb')]
+        [InlineKeyboardButton("Lista degli agriturismi", callback_data='vi_agri')],
+        [InlineKeyboardButton("Random", callback_data='vi_random')],
+        [InlineKeyboardButton("Lista dei b&b", callback_data='vi_bb')]
     ]
     reply_markup = InlineKeyboardMarkup(kbVi)
     # Invio dei bottoni all'utente
-    await update.callback_query.message.edit_text(text='Vieggio:', reply_markup=reply_markup)
+    await update.callback_query.message.edit_text(text='Vigasio:', reply_markup=reply_markup)
 
 async def vi_bb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = "SELECT * FROM Vigasio where tipostruttura in ('B&B')"
+    query = "SELECT * FROM Vigasio where tipostruttura in ('Lista dei b&b')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco B&B:\n" + formatted_results
+    response = "Elenco Lista dei b&b:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
@@ -305,7 +384,14 @@ async def vi_agri(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = "SELECT * FROM Vigasio where tipostruttura in ('Alberghiero')"
     results = execute_query(query)
     formatted_results = format_results(results)
-    response = "Elenco Agriturismo:\n" + formatted_results
+    response = "Elenco Lista degli agriturismi:\n" + formatted_results
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+async def vi_rd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = "SELECT * FROM Vigasio order by random() limit 1"
+    results = execute_query(query)
+    formatted_results = format_results(results)
+    response = "Elenco Random:\n" + formatted_results
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
@@ -335,7 +421,8 @@ async def caps(update: Update, context: ContextTypes.DEFAULT_TYPE):
     received_input = context.args
     text_caps = ' '.join(received_input).upper()
     await context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
-    
+
+
 
 # Funzione per gestire il comando /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -391,61 +478,81 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif query.data == 'moz_bb':
         await moz_bb(update, context)
-    elif query.data == 'moz_hotel':
-        await moz_hotel(update, context)
+    elif query.data == 'moz_Lista_hotel':
+        await moz_Lista_hotel(update, context)
+    elif query.data == 'moz_random':
+        await moz_rd(update, context)
 
     elif query.data == 'som_agri':
         await som_agri(update, context)
     elif query.data == 'som_bb':
         await som_bb(update, context)
-    elif query.data == 'som_hotel':
-        await som_hotel(update, context)
+    elif query.data == 'som_Lista_hotel':
+        await som_Lista_hotel(update, context)
+    elif query.data == 'som_random':
+        await som_rd(update, context)
 
     elif query.data == 'so_agri':
         await so_agri(update, context)
     elif query.data == 'so_bb':
         await so_bb(update, context)
+    elif query.data == 'so_random':
+        await so_rd(update, context)
 
     elif query.data == 'val_agri':
         await val_agri(update, context)
     elif query.data == 'val_bb':
         await val_bb(update, context)
+    elif query.data == 'val_random':
+        await val_rd(update, context)
 
     elif query.data == 'vi_agri':
         await vi_agri(update, context)
     elif query.data == 'vi_bb':
         await vi_bb(update, context)
+    elif query.data == 'vi_random':
+        await vi_rd(update, context)
     
     elif query.data == 'cas_agri':
         await cas_agri(update, context)
     elif query.data == 'cas_bb':
         await cas_bb(update, context)
-    elif query.data == 'cas_hotel':
-        await cas_hotel(update, context)
+    elif query.data == 'cas_Lista_hotel':
+        await cas_Lista_hotel(update, context)
+    elif query.data == 'cas_rd':
+        await cas_rd(update, context)
 
     elif query.data == 'bus_agri':
         await bus_agri(update, context)
     elif query.data == 'bus_bb':
         await bus_bb(update, context)
-    elif query.data == 'bus_hotel':
-        await bus_hotel(update, context)
+    elif query.data == 'bus_Lista_hotel':
+        await bus_Lista_hotel(update, context)
+    elif query.data == 'bus_rd':
+        await bus_rd(update, context)
     
     elif query.data == 'pas_bb':
         await pas_bb(update, context)
-    elif query.data == 'pas_hotel':
-        await pas_hotel(update, context)
+    elif query.data == 'pas_Lista_hotel':
+        await pas_Lista_hotel(update, context)
+    elif query.data == 'pas_random':
+        await pas_rd(update, context)
 
     elif query.data == 'pes_bb':
         await pes_bb(update, context)
-    elif query.data == 'pes_hotel':
-        await pes_hotel(update, context)
+    elif query.data == 'pes_Lista_hotel':
+        await pes_Lista_hotel(update, context)
+    elif query.data == 'pes_random':
+        await pes_rd(update, context)
 
     elif query.data == 'vil_agri':
         await vil_agri(update, context)
     elif query.data == 'vil_bb':
         await vil_bb(update, context)
-    elif query.data == 'vil_hotel':
-        await vil_hotel(update, context)
+    elif query.data == 'vil_Lista_hotel':
+        await vil_Lista_hotel(update, context)
+    elif query.data == 'vil_random':
+        await vil_rd(update, context)
     
 
 
@@ -471,6 +578,3 @@ def main():
 
 if __name__=='__main__':
    main()
-
-
-
